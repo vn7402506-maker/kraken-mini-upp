@@ -1,0 +1,184 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+<meta name="theme-color" content="#080711">
+<title>KRAKEN — Telegram Mini App</title>
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r152/three.min.js"></script>
+<style>
+:root{--bg:#080711;--pink:#ff2ca8;--violet:#9c4dff;--cyan:#62e8ff;--muted:#aaa6bc;--tg-safe-top:env(safe-area-inset-top);--tg-safe-bottom:env(safe-area-inset-bottom)}
+*{box-sizing:border-box}html{background:var(--bg);scroll-behavior:smooth}body{margin:0;color:#fff;background:radial-gradient(ellipse at 50% 0%,#21102d 0%,#0b0915 42%,#06060c 100%);font-family:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif;min-height:100vh;overflow-x:hidden}button{font:inherit;color:inherit;cursor:pointer}#app{max-width:760px;margin:0 auto;min-height:100vh;position:relative;padding:calc(14px + var(--tg-safe-top)) 18px calc(26px + var(--tg-safe-bottom));overflow:hidden}.topbar{display:flex;align-items:center;justify-content:space-between;position:relative;z-index:4}.brand{font-size:14px;font-weight:900;letter-spacing:.24em}.brand span{color:var(--pink)}.status{font-size:10px;letter-spacing:.12em;color:#b7b1c8;border:1px solid #ffffff20;border-radius:100px;padding:8px 10px;display:flex;align-items:center;gap:7px}.dot{width:6px;height:6px;border-radius:50%;background:#69ffb2;box-shadow:0 0 10px #69ffb2}.hero{height:min(67vh,610px);min-height:420px;position:relative;display:flex;align-items:flex-start;justify-content:center;text-align:center;padding-top:38px}.eyebrow{font-size:10px;letter-spacing:.3em;color:#d6b4e6;text-transform:uppercase;position:relative;z-index:2}.hero h1{font-size:clamp(54px,15vw,100px);line-height:.9;letter-spacing:-.075em;margin:16px 0 10px;font-weight:950;background:linear-gradient(180deg,#fff 6%,#f6c9ff 44%,#ff36ad 85%);-webkit-background-clip:text;background-clip:text;color:transparent;filter:drop-shadow(0 0 25px #f42ca43d);position:relative;z-index:2}.tagline{font-size:11px;letter-spacing:.19em;color:#d6d0e4;position:relative;z-index:2}#scene{position:absolute;inset:130px -20px -30px;z-index:1;pointer-events:auto}#scene canvas{width:100%;height:100%;display:block}.scene-glow{position:absolute;inset:42% -10% -8%;background:radial-gradient(ellipse,#d91b9a1c 0%,#4d1a8a0b 36%,transparent 70%);pointer-events:none;z-index:0}.hero-bottom{position:absolute;z-index:3;bottom:4px;left:0;right:0;text-align:center}.subcopy{color:#a7a0b8;font-size:12px;line-height:1.6;max-width:310px;margin:0 auto 16px}.primary{border:0;border-radius:15px;padding:16px 20px;width:100%;max-width:370px;font-weight:850;letter-spacing:.02em;background:linear-gradient(100deg,#ff299e,#a947ff);box-shadow:0 10px 34px #ed2b9c38, inset 0 1px #ffffff45;transition:transform .2s,filter .2s}.primary:active{transform:scale(.98);filter:brightness(1.15)}.primary .arrow{float:right;font-size:19px;line-height:17px}.section{position:relative;z-index:2;margin-top:34px}.section-kicker{color:var(--pink);font-size:10px;letter-spacing:.24em;text-transform:uppercase}.section h2{font-size:27px;line-height:1.08;letter-spacing:-.04em;margin:10px 0 12px}.section p{font-size:13px;line-height:1.75;color:var(--muted);margin:0}.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:20px}.stat{border:1px solid #ffffff13;background:linear-gradient(145deg,#ffffff0b,#ffffff03);border-radius:15px;padding:14px 10px}.stat strong{display:block;font-size:20px;letter-spacing:-.04em;color:#fff}.stat small{display:block;margin-top:5px;color:#938da8;font-size:9px;letter-spacing:.12em;text-transform:uppercase}.action-card{margin-top:28px;padding:20px;border:1px solid #ff3db32b;border-radius:20px;background:radial-gradient(ellipse at 100% 0%,#9c34a51b,transparent 60%),#ffffff05;position:relative;overflow:hidden}.action-card h3{margin:0 0 8px;font-size:20px;letter-spacing:-.03em}.action-card p{font-size:12px;color:var(--muted);line-height:1.6;margin:0 0 16px}.secondary{width:100%;border:1px solid #ffffff25;background:#ffffff08;border-radius:12px;padding:13px;font-weight:750}.footer{text-align:center;color:#68647b;font-size:9px;letter-spacing:.17em;padding:25px 0 6px}.toast{position:fixed;left:50%;bottom:calc(22px + var(--tg-safe-bottom));transform:translate(-50%,20px);opacity:0;pointer-events:none;transition:.25s;background:#22152b;border:1px solid #ff3db355;padding:12px 16px;border-radius:12px;font-size:12px;z-index:20;white-space:nowrap}.toast.show{opacity:1;transform:translate(-50%,0)}.fallback{position:absolute;inset:0;display:grid;place-items:center;color:#ff7bd1;font-size:13px}.hint{font-size:10px;color:#7f7895;text-align:center;margin-top:9px}
+@media(min-width:600px){#app{padding-left:28px;padding-right:28px}.hero{height:650px}.hero h1{font-size:104px}.section h2{font-size:32px}}
+@media(max-height:700px){.hero{min-height:440px;height:70vh}.hero-bottom{bottom:0}.subcopy{margin-bottom:10px}.primary{padding:14px}}
+</style>
+</head>
+<body>
+<div id="app">
+  <header class="topbar">
+    <div class="brand">KRAKEN<span>.</span></div>
+    <div class="status"><i class="dot"></i><span id="statusText">СИСТЕМА АКТИВНА</span></div>
+  </header>
+  <main>
+    <section class="hero">
+      <div style="position:relative;z-index:2">
+        <div class="eyebrow">Глубина зовёт</div>
+        <h1>KRAKEN</h1>
+        <div class="tagline">СИЛА, КОТОРАЯ ВСЕГДА РЯДОМ</div>
+      </div>
+      <div class="scene-glow"></div><div id="scene" aria-label="Анимированная 3D-модель кракена"></div>
+      <div class="hero-bottom">
+        <p class="subcopy">Погрузись в цифровую бездну.<br>Твоя история начинается здесь.</p>
+        <button class="primary" id="startBtn">Войти в глубину <span class="arrow">↗</span></button>
+        <div class="hint">ПОТЯНИ ВНИЗ · ИССЛЕДУЙ</div>
+      </div>
+    </section>
+    <section class="section" id="depth">
+      <div class="section-kicker">01 / Из бездны</div>
+      <h2>Не просто легенда.<br>Это целая вселенная.</h2>
+      <p>Кракен просыпается там, где заканчивается свет. Исследуй пространство, следи за сигналами и стань частью сообщества, которое смотрит глубже остальных.</p>
+      <div class="stats">
+        <div class="stat"><strong>∞</strong><small>Глубина</small></div>
+        <div class="stat"><strong>24/7</strong><small>На связи</small></div>
+        <div class="stat"><strong>01</strong><small>Твой путь</small></div>
+      </div>
+    </section>
+    <section class="action-card">
+      <div class="section-kicker">02 / Точка входа</div>
+      <h3>Сообщество ждёт.</h3>
+      <p>Открой Telegram-канал проекта, чтобы получать обновления и узнавать, что скрывает глубина.</p>
+      <button class="secondary" id="communityBtn">Открыть Telegram ↗</button>
+    </section>
+  </main>
+  <footer class="footer">KRAKEN EXPERIENCE · MADE FOR THE DEEP</footer>
+</div>
+<div class="toast" id="toast">Подключаемся…</div>
+<script>
+(() => {
+  const tg = window.Telegram?.WebApp;
+  if (tg) {
+    tg.ready();
+    tg.expand();
+    tg.setHeaderColor?.('#080711');
+    tg.setBackgroundColor?.('#080711');
+    try { tg.enableClosingConfirmation?.(); } catch(e) {}
+  }
+  const toast = document.getElementById('toast');
+  let toastTimer;
+  function notify(message) {
+    toast.textContent = message;
+    toast.classList.add('show');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => toast.classList.remove('show'), 2200);
+    if (tg?.HapticFeedback) { try { tg.HapticFeedback.impactOccurred('light'); } catch(e) {} }
+  }
+  // Replace this with the real public channel/bot URL before launch.
+  const COMMUNITY_URL = 'https://t.me/';
+  document.getElementById('startBtn').addEventListener('click', () => {
+    if (tg?.openTelegramLink) tg.openTelegramLink(COMMUNITY_URL);
+    else if (COMMUNITY_URL !== 'https://t.me/') window.open(COMMUNITY_URL, '_blank', 'noopener');
+    else notify('Укажи ссылку своего Telegram в index.html');
+  });
+  document.getElementById('communityBtn').addEventListener('click', () => {
+    if (tg?.openTelegramLink) tg.openTelegramLink(COMMUNITY_URL);
+    else if (COMMUNITY_URL !== 'https://t.me/') window.open(COMMUNITY_URL, '_blank', 'noopener');
+    else notify('Укажи ссылку своего Telegram в index.html');
+  });
+
+  const mount = document.getElementById('scene');
+  if (!window.THREE) {
+    mount.innerHTML = '<div class="fallback">KRAKEN · WebGL недоступен</div>';
+    document.getElementById('statusText').textContent = 'РЕЖИМ ОЖИДАНИЯ';
+    return;
+  }
+  const THREE = window.THREE;
+  let scene, camera, renderer, kraken, tentacles=[], suckers=[], particles, water, clock;
+  try {
+    scene = new THREE.Scene();
+    scene.fog = new THREE.FogExp2(0x080711, .035);
+    camera = new THREE.PerspectiveCamera(42, 1, .1, 100);
+    camera.position.set(0, 0.25, 10.8);
+    renderer = new THREE.WebGLRenderer({alpha:true, antialias:true, powerPreference:'high-performance'});
+    renderer.setPixelRatio(Math.min(devicePixelRatio || 1, 1.8));
+    renderer.setClearColor(0x000000,0);
+    renderer.outputColorSpace = THREE.SRGBColorSpace;
+    mount.appendChild(renderer.domElement);
+    scene.add(new THREE.AmbientLight(0x8270b4, 1.6));
+    const key = new THREE.PointLight(0xff36ae, 4.5, 25); key.position.set(-3,2,5); scene.add(key);
+    const rim = new THREE.PointLight(0x604bff, 5, 25); rim.position.set(4,1,-2); scene.add(rim);
+    const bodyMat = new THREE.MeshStandardMaterial({color:0x31213f, metalness:.45, roughness:.31, emissive:0x190b2b, emissiveIntensity:.9});
+    const pinkMat = new THREE.MeshStandardMaterial({color:0xff3aa9, emissive:0xff087f, emissiveIntensity:3, roughness:.22});
+    const darkMat = new THREE.MeshStandardMaterial({color:0x160f28, metalness:.3, roughness:.32, emissive:0x2b0b3b, emissiveIntensity:.7});
+    kraken = new THREE.Group(); scene.add(kraken); kraken.position.y=-.3;
+    const head = new THREE.Mesh(new THREE.SphereGeometry(1,48,32), bodyMat);
+    head.scale.set(1.0,1.25,.76); head.position.set(0,.85,0); kraken.add(head);
+    const mantle = new THREE.Mesh(new THREE.SphereGeometry(1,40,24), darkMat);
+    mantle.scale.set(.78,1.05,.7); mantle.position.set(0,1.35,-.1); mantle.rotation.z=.12; kraken.add(mantle);
+    for (const x of [-.42,.42]) {
+      const eye = new THREE.Mesh(new THREE.SphereGeometry(.105,20,16), pinkMat);
+      eye.position.set(x,.9,.69); kraken.add(eye);
+      const halo = new THREE.Mesh(new THREE.TorusGeometry(.17,.018,8,32), pinkMat);
+      halo.position.set(x,.9,.68); kraken.add(halo);
+    }
+    // A subtle front ridge makes the face readable even on small screens.
+    for (let i=0;i<5;i++) {
+      const ridge = new THREE.Mesh(new THREE.TorusGeometry(.23+i*.075,.012,6,36,Math.PI), pinkMat);
+      ridge.position.set(0,1.25+i*.055,.61-i*.018); ridge.rotation.x=.15; kraken.add(ridge);
+    }
+    const tubeMat = new THREE.MeshStandardMaterial({color:0x392044, metalness:.3, roughness:.36, emissive:0x7b145d, emissiveIntensity:.65});
+    for (let i=0;i<8;i++) {
+      const angle = Math.PI*2*i/8;
+      const points=[];
+      for(let j=0;j<=32;j++){
+        const t=j/32, r=.35+2.15*t;
+        points.push(new THREE.Vector3(Math.cos(angle)*r, -.15-1.2*t+Math.sin(t*5+i)*.13, Math.sin(angle)*r*.42));
+      }
+      const curve = new THREE.CatmullRomCurve3(points);
+      const mesh = new THREE.Mesh(new THREE.TubeGeometry(curve,48,.105*(1-i*.035),8,false),tubeMat);
+      mesh.userData={angle,seed:i}; kraken.add(mesh); tentacles.push(mesh);
+      // Suction cups, luminous pink rings, placed along each tentacle.
+      for(let j=4;j<=10;j++){
+        const t=j/12, r=.35+2.15*t;
+        const cup = new THREE.Mesh(new THREE.TorusGeometry(.055,.012,6,12), pinkMat);
+        cup.position.set(Math.cos(angle)*r, -.15-1.2*t+Math.sin(t*5+i)*.13, Math.sin(angle)*r*.42+.06);
+        cup.rotation.x=Math.PI/2; kraken.add(cup); suckers.push({mesh:cup,angle,t,seed:i});
+      }
+    }
+    const pCount=260, pos=new Float32Array(pCount*3), speeds=[];
+    for(let i=0;i<pCount;i++){pos[i*3]=(Math.random()-.5)*10;pos[i*3+1]=(Math.random()-.5)*8;pos[i*3+2]=(Math.random()-.5)*5;speeds.push(.15+Math.random()*.55)}
+    const pGeo=new THREE.BufferGeometry();pGeo.setAttribute('position',new THREE.BufferAttribute(pos,3));
+    particles=new THREE.Points(pGeo,new THREE.PointsMaterial({color:0xff70cb,size:.025,transparent:true,opacity:.7}));scene.add(particles);particles.userData.speeds=speeds;
+    const ringGeo=new THREE.TorusGeometry(2.7,.012,6,100);water=new THREE.Mesh(ringGeo,new THREE.MeshBasicMaterial({color:0x6c37a8,transparent:true,opacity:.3}));water.rotation.x=Math.PI/2;water.position.y=-2.5;scene.add(water);
+    clock = new THREE.Clock();
+  } catch(e) {
+    mount.innerHTML = '<div class="fallback">KRAKEN · Не удалось запустить WebGL</div>';
+    document.getElementById('statusText').textContent = 'РЕЖИМ ОЖИДАНИЯ';
+    console.error(e); return;
+  }
+  let pointerX=0,pointerY=0, targetX=0,targetY=0;
+  mount.addEventListener('pointermove', e=>{const r=mount.getBoundingClientRect();targetX=((e.clientX-r.left)/r.width-.5)*.7;targetY=((e.clientY-r.top)/r.height-.5)*-.4;});
+  mount.addEventListener('pointerleave',()=>{targetX=0;targetY=0});
+  function resize(){const w=Math.max(1,mount.clientWidth),h=Math.max(1,mount.clientHeight);renderer.setSize(w,h,false);camera.aspect=w/h;camera.updateProjectionMatrix();}
+  new ResizeObserver(resize).observe(mount);resize();
+  function animate(){
+    requestAnimationFrame(animate);
+    const t=clock.getElapsedTime();
+    pointerX+=(targetX-pointerX)*.035;pointerY+=(targetY-pointerY)*.035;
+    kraken.rotation.y=Math.sin(t*.28)*.12+pointerX;
+    kraken.rotation.x=Math.sin(t*.35)*.035+pointerY;
+    kraken.position.y=-.3+Math.sin(t*.75)*.1;
+    kraken.scale.setScalar(1+Math.sin(t*.9)*.018);
+    tentacles.forEach((m,i)=>{m.rotation.z=Math.sin(t*.7+i)*.035;m.rotation.x=Math.cos(t*.6+i)*.025});
+    suckers.forEach(s=>{s.mesh.position.y+=Math.sin(t*2+s.seed+s.t*6)*.0007});
+    particles.rotation.y=t*.018;particles.rotation.x=Math.sin(t*.1)*.04;
+    water.rotation.z=t*.035;water.material.opacity=.18+Math.sin(t)*.07;
+    camera.position.x=pointerX*.35;camera.position.y=.25+pointerY*.25;camera.lookAt(0,-.1,0);
+    renderer.render(scene,camera);
+  }
+  animate();
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) { /* scene remains interactive; motion amplitude is subtle */ }
+})();
+</script>
+</body>
+</html>
